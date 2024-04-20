@@ -1,0 +1,43 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Função wrapper
+def fft_decimation_in_time(x):
+    return np.fft.fft(x)
+
+# Parâmetros do sinal
+sr = 2000  # Taxa de amostragem
+ts = 1.0/sr  # Intervalo de amostragem
+t = np.arange(0, 1, ts)  # Vetor de tempo
+
+# Geração do sinal de entrada
+freq1 = 4.0
+x = 3 * np.sin(2 * np.pi * freq1 * t)
+
+freq2 = 0.0
+x += np.sin(2 * np.pi * freq2 * t)
+
+freq3 = 0.0
+x += 0.5 * np.sin(2 * np.pi * freq3 * t)
+
+# Aplica a FFT por decimação no tempo ao sinal de entrada
+X = fft_decimation_in_time(x)
+
+# Plot do sinal de entrada
+plt.subplot(2, 1, 1)
+plt.plot(t, x, 'r')
+plt.title('Sinal de Entrada')
+plt.xlabel('Tempo (s)')
+plt.ylabel('Amplitude')
+
+# Plot da magnitude da FFT (saída)
+plt.subplot(2, 1, 2)
+frequencies = np.fft.fftfreq(len(X), ts)[:len(X)//2]
+plt.stem(frequencies, np.abs(X[:len(X)//2]), 'b', markerfmt=" ", basefmt="-b")
+plt.title('Magnitude da FFT do Sinal de Entrada')
+plt.xlabel('Frequência (Hz)')
+plt.ylabel('|X(freq)|')
+plt.xlim(0, 10)
+
+plt.tight_layout()
+plt.show()
